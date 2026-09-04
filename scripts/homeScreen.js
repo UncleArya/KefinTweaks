@@ -1540,7 +1540,8 @@
             ParentId: libraryId,
             ImageTypeLimit: 1,
             EnableImageTypes: 'Primary,Backdrop,Thumb',
-            IncludeItemTypes: includeItemTypes
+            IncludeItemTypes: includeItemTypes,
+            Fields: 'SeriesPrimaryImageTag,ParentThumbImageTag,PrimaryImageAspectRatio'
         };
         
         const queryParams = Object.entries(params)
