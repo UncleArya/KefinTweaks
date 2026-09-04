@@ -304,18 +304,21 @@
         cardImageContainer.setAttribute('aria-label', item.Name || 'Unknown');
 
         // Force specific image if card format is specified
-        if (cardFormat === 'backdrop') {
-            let imageUrl = '';
-            if (item.BackdropImageTags[0]) {
-                imageUrl = `${serverAddress}/Items/${item.Id}/Images/Backdrop?${imageParams}&quality=96&tag=${item.BackdropImageTags[0]}`;
-            } else if (item.ParentBackdropImageTags && item.ParentBackdropImageTags[0]) {
-                imageUrl = `${serverAddress}/Items/${item.ParentBackdropItemId}/Images/Backdrop?${imageParams}&quality=96&tag=${item.ParentBackdropImageTags[0]}`;
-            } else if (item.ImageTags?.Thumb) {
-                imageUrl = `${serverAddress}/Items/${item.Id}/Images/Thumb?${imageParams}&quality=96&tag=${item.ImageTags?.Thumb}`;
-            } else {
-                imageUrl = `${serverAddress}/Items/${item.Id}/Images/Primary?${imageParams}&quality=96&tag=${item.ImageTags?.Primary}`;
-            }
-            cardImageContainer.style.backgroundImage = `url("${imageUrl}")`;
+		} else if (cardFormat === 'backdrop') {
+		    let imageUrl = '';
+		
+		    if (item.BackdropImageTags?.[0]) {
+		        imageUrl = `${serverAddress}/Items/${item.Id}/Images/Backdrop?${imageParams}&quality=96&tag=${item.BackdropImageTags[0]}`;
+		    } else if (item.ParentBackdropImageTags?.[0]) {
+		        imageUrl = `${serverAddress}/Items/${item.ParentBackdropItemId}/Images/Backdrop?${imageParams}&quality=96&tag=${item.ParentBackdropImageTags[0]}`;
+		    } else if (item.ImageTags?.Thumb) {
+		        imageUrl = `${serverAddress}/Items/${item.Id}/Images/Thumb?${imageParams}&quality=96&tag=${item.ImageTags.Thumb}`;
+		    } else {
+		        imageUrl = `${serverAddress}/Items/${item.Id}/Images/Primary?${imageParams}&quality=96&tag=${item.ImageTags?.Primary}`;
+		    }
+		
+		    cardImageContainer.style.backgroundImage = `url("${imageUrl}")`;
+
         } else if (cardFormat === 'square') {
             if (item.Type === 'Season' || item.Type === 'Series' || item.Type === 'Movie') {
                 const imageUrl = item.BackdropImageTags[0] ? `${serverAddress}/Items/${item.Id}/Images/Backdrop?${imageParams}&quality=96&tag=${item.BackdropImageTags[0]}` : `${serverAddress}/Items/${item.Id}/Images/Primary?${imageParams}&quality=96&tag=${item.ImageTags?.Primary}`;
@@ -324,14 +327,23 @@
                 const imageUrl = item.PrimaryImageTags[0] ? `${serverAddress}/Items/${item.Id}/Images/Primary?${imageParams}&quality=96&tag=${item.PrimaryImageTags[0]}` : `${serverAddress}/Items/${item.Id}/Images/Thumb?${imageParams}&quality=96&tag=${item.ImageTags?.Thumb}`;
                 cardImageContainer.style.backgroundImage = `url("${imageUrl}")`;
             }
-        } else if (cardFormat === 'portrait' || cardFormat === 'poster') {
-            if (item.Type === 'Episode' && item.SeriesPrimaryImageTag) {
-                const imageUrl = `${serverAddress}/Items/${item.SeriesId}/Images/Primary?${imageParams}&quality=96&tag=${item.SeriesPrimaryImageTag}`;
-                cardImageContainer.style.backgroundImage = `url("${imageUrl}")`;
-            } else {
-                const imageUrl = item.ImageTags?.Primary ? `${serverAddress}/Items/${item.Id}/Images/Primary?${imageParams}&quality=96&tag=${item.ImageTags?.Primary}` : `${serverAddress}/Items/${item.Id}/Images/Thumb?${imageParams}&quality=96&tag=${item.ImageTags?.Thumb}`;
-                cardImageContainer.style.backgroundImage = `url("${imageUrl}")`;
-            }
+		} else if (cardFormat === 'portrait' || cardFormat === 'poster') {
+		    if (item.Type === 'Episode' && item.SeriesId) {
+		        // Episodes displayed as portrait cards should always use
+		        // the Series poster rather than the episode's own artwork.
+		        //
+		        // Do not depend on SeriesPrimaryImageTag being returned
+		        // by the Jellyfin API.
+		        const imageUrl = `${serverAddress}/Items/${item.SeriesId}/Images/Primary?${imageParams}&quality=96`;
+		
+		        cardImageContainer.style.backgroundImage = `url("${imageUrl}")`;
+		    } else {
+		        const imageUrl = item.ImageTags?.Primary
+		            ? `${serverAddress}/Items/${item.Id}/Images/Primary?${imageParams}&quality=96&tag=${item.ImageTags.Primary}`
+		            : `${serverAddress}/Items/${item.Id}/Images/Thumb?${imageParams}&quality=96&tag=${item.ImageTags?.Thumb}`;
+		
+		        cardImageContainer.style.backgroundImage = `url("${imageUrl}")`;
+		    }
         } else if (cardFormat === 'thumb') {
             let imageUrl = '';
             if (item.Type === 'Episode' && item.ParentThumbImageTag) {
