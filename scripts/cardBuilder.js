@@ -324,7 +324,7 @@
                 const imageUrl = item.PrimaryImageTags[0] ? `${serverAddress}/Items/${item.Id}/Images/Primary?${imageParams}&quality=96&tag=${item.PrimaryImageTags[0]}` : `${serverAddress}/Items/${item.Id}/Images/Thumb?${imageParams}&quality=96&tag=${item.ImageTags?.Thumb}`;
                 cardImageContainer.style.backgroundImage = `url("${imageUrl}")`;
             }
-        } else if (cardFormat === 'portrait') {
+        } else if (cardFormat === 'portrait' || cardFormat === 'poster') {
             if (item.Type === 'Episode' && item.SeriesPrimaryImageTag) {
                 const imageUrl = `${serverAddress}/Items/${item.SeriesId}/Images/Primary?${imageParams}&quality=96&tag=${item.SeriesPrimaryImageTag}`;
                 cardImageContainer.style.backgroundImage = `url("${imageUrl}")`;
