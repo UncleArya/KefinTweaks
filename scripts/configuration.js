@@ -4877,7 +4877,7 @@
         const sortOrderDirection = sectionConfig.sortOrderDirection || 'Ascending';
         const itemLimit = parseInt(sectionConfig.itemLimit, 10) || 16;
         const sources = (sectionConfig.source || '').split(',').map(s => s.trim()).filter(Boolean);
-        const fields = 'PrimaryImageAspectRatio,DateCreated,Overview,ProductionYear,ImageTags,BackdropImageTags,ParentBackdropImageTags,ParentThumbImageTag,SeriesPrimaryImageTag';
+        const fields = 'PrimaryImageAspectRatio,DateCreated,Overview,ProductionYear,ImageTags,BackdropImageTags,ParentBackdropImageTags,SeriesPrimaryImage';
         
         // Parse additional query options
         const additionalOptions = {};
