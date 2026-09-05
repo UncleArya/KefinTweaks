@@ -306,8 +306,8 @@
     ];
 
     // Use this for development
-    const urlSuffix = '';
-    //const urlSuffix = `?v=${new Date().getTime()}`;
+    const urlSuffix = `?v=${new Date().getTime()}`;
+    //const urlSuffix = '';
 
     // Inject dashboard drawer version badge CSS using dynamic version number
     async function injectVersionBadgeCSS() {
