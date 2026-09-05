@@ -1558,9 +1558,41 @@
             });
             
             if (!response.ok) throw new Error(`Fetch failed: ${response.status}`);
-            const items = await response.json();
+            let items = await response.json();
             
             if (!items || items.length === 0) return false;
+            
+            // For TV libraries the Latest endpoint returns Episode items.
+            // Collapse them to their parent series so the row shows series
+            // posters and production years instead of episode thumbs and
+            // "Sxx:Exx - <episode name>" subtitles (KefinTweaks issue #79).
+            if (includeItemTypes === 'Episode') {
+                // Build ordered list of unique series IDs (most recently added first)
+                const seriesOrder = [];
+                const seenSeries = new Set();
+                items.forEach(ep => {
+                    if (ep.SeriesId && !seenSeries.has(ep.SeriesId)) {
+                        seenSeries.add(ep.SeriesId);
+                        seriesOrder.push(ep.SeriesId);
+                    }
+                });
+
+                if (seriesOrder.length > 0) {
+                    const seriesResponse = await ApiClient.getItems(userId, {
+                        Ids: seriesOrder.join(','),
+                        Recursive: false
+                    });
+                    const seriesById = new Map((seriesResponse.Items || []).map(s => [s.Id, s]));
+                    const collapsed = seriesOrder
+                        .map(id => seriesById.get(id))
+                        .filter(Boolean);
+
+                    if (collapsed.length > 0) {
+                        items = collapsed;
+                        LOG(`Collapsed ${seenSeries.size} series from ${items.length ? '' : ''}latest episodes for section: ${sectionConfig.name}`);
+                    }
+                }
+            }
             
             // Render section
             if (!window.cardBuilder || !window.cardBuilder.renderCards) {
