@@ -424,10 +424,15 @@
         const latestMatch = root.match(/@latest(\/|$)/);
         const mainMatch = root.match(/@main(\/|$)/);
 
+        // Determine the actual configured GitHub owner/repo from the root URL
+        // instead of assuming it's always ranaldsgift/KefinTweaks
+        const repoMatch = root.match(/cdn\.jsdelivr\.net\/gh\/([^\/]+)\/([^@\/]+)@/);
+        const githubRepo = repoMatch ? `${repoMatch[1]}/${repoMatch[2]}` : 'ranaldsgift/KefinTweaks';
+
         if (latestMatch) {
             // Fetch the latest release version number
             try {
-                const response = await fetch('https://api.github.com/repos/ranaldsgift/KefinTweaks/releases/latest');
+                const response = await fetch(`https://api.github.com/repos/${githubRepo}/releases/latest`);
                 if (response.ok) {
                     const data = await response.json();
                     if (data && data.tag_name) {
@@ -448,7 +453,7 @@
         } else if (mainMatch) {
             // Fetch the latest commit hash from the main branch
             try {
-                const response = await fetch('https://api.github.com/repos/ranaldsgift/KefinTweaks/commits/main');
+                const response = await fetch(`https://api.github.com/repos/${githubRepo}/commits/main`);
                 if (response.ok) {
                     const commit = await response.json();
                     if (commit && commit.sha) {
