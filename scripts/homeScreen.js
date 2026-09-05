@@ -1978,7 +1978,7 @@
             SeriesPrimaryImageTag: item.SeriesPrimaryImageTag,
             ParentBackdropItemId: item.ParentBackdropItemId,
             ParentBackdropImageTags: item.ParentBackdropImageTags,
-            ParentThumbImageTag: item.ParentPrimaryImageTags,
+            ParentThumbImageTag: item.ParentThumbImageTag,
             IndexNumber: item.IndexNumber,
             ParentIndexNumber: item.ParentIndexNumber,
             ImageTags: item.ImageTags,
